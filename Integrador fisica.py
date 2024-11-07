@@ -6,11 +6,14 @@ ventana.mainloop()
 import tkinter as tk
 from tkinter import messagebox
 
-def calcular_potencia(energia_anterior, energia_actual, tension=220, cos_fi=0.85):
+def calcular_potencia(energia_anterior, energia_actual):
     consumo_energia = energia_actual - energia_anterior  # en kWh
     potencia_promedio_w = consumo_energia * 1000  # en W
-    corriente = potencia_promedio_w / (tension * cos_fi)  # en A
-    return consumo_energia, potencia_promedio_w, corriente
+    return consumo_energia, potencia_promedio_w
+
+def calcular_corriente(potencia, tension=220, cos_fi=0.85):
+    corriente = potencia / (tension * cos_fi)  # en A
+    return corriente
 
 def calcular_capacitancia(corriente, tension=220):
     frecuencia = 50  # Hz
