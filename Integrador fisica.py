@@ -123,5 +123,8 @@ label_resultado_total.grid(row=6, column=0, columnspan=2, pady=5)
 button_desglose = tk.Button(frame, text="Ver desglose de cargos")
 button_desglose.grid(row=7, column=0, columnspan=2, pady=5)
 
+button_desglose = tk.Button(root, text="Ver desglose de cargos")
+button_desglose.grid(row=7, columnspan=2)
+
 # Iniciar el bucle principal de la interfaz gráfica
 root.mainloop()
