@@ -125,6 +125,7 @@ button_desglose.grid(row=7, column=0, columnspan=2, pady=5)
 
 button_desglose = tk.Button(root, text="Ver desglose de cargos")
 button_desglose.grid(row=7, columnspan=2)
+#sfdgfgdhdghdghd
 
 # Iniciar el bucle principal de la interfaz gráfica
 root.mainloop()
