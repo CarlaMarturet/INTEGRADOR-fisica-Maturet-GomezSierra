@@ -30,10 +30,14 @@ def calcular_total_pagar(consumo_energia):
     subsidio = 0.20
 
     # Calcular cargos por consumo
-    consumo_bimensual_basico = min(consumo_energia, 600) * tarifa_basica_600
-    consumo_excedente_142 = max(0, min(consumo_energia - 600, 142)) * tarifa_excedente_142
-    consumo_excedente_43 = max(0, min(consumo_energia - 742, 43)) * tarifa_excedente_43
-    consumo_excedente_503 = max(0, consumo_energia - 785) * tarifa_excedente_503
+    consumo_energia_restante = consumo_energia
+    consumo_bimensual_basico = min(consumo_energia_restante, 600) * tarifa_basica_600
+    consumo_energia_restante -= min(consumo_energia_restante, 600)
+    consumo_excedente_142 = min(consumo_energia_restante, 142) * tarifa_excedente_142
+    consumo_energia_restante -= min(consumo_energia_restante, 142)
+    consumo_excedente_43 = min(consumo_energia_restante, 43) * tarifa_excedente_43
+    consumo_energia_restante -= min(consumo_energia_restante, 43)
+    consumo_excedente_503 = max(consumo_energia_restante, 0) * tarifa_excedente_503
 
     # Calcular subtotal antes de beneficios y subsidios
     subtotal = (cargo_fijo_suministro + consumo_bimensual_basico +
@@ -51,10 +55,10 @@ def calcular_total_pagar(consumo_energia):
     
     return total_pagar, {
         "Cargo fijo por suministro": cargo_fijo_suministro,
-        "Consumo primeros 600 KWh/Bim": consumo_bimensual_basico,
-        "Consumo excedente 142 KWh/Bim": consumo_excedente_142,
-        "Consumo excedente 43 KWh/Bim": consumo_excedente_43,
-        "Consumo excedente 503 KWh/Bim": consumo_excedente_503,
+        "Consumo primeros 600 KWh/Bim a $123.9694": consumo_bimensual_basico,
+        "Consumo excedente 142 KWh/Bim a $134.8487": consumo_excedente_142,
+        "Consumo excedente 43 KWh/Bim a $162.1050": consumo_excedente_43,
+        "Consumo excedente 503 KWh/Bim a $166.6580": consumo_excedente_503,
         "Beneficio Social Provincial Eléctrico": -beneficio_social,
         "Alumbrado Publico": alumbrado_publico,
         "Subtotal con subsidio aplicado": subtotal_con_subsidio,
@@ -93,6 +97,21 @@ root = tk.Tk()
 root.title("Calculadora de Energía")
 root.geometry("900x500")  # Ajustar el tamaño de la ventana por defecto
 
+
+# Hacer la ventana a media pantalla y centrarla
+root.geometry("960x540")
+root.eval('tk::PlaceWindow . center')
+
+# Crear y colocar los widgets en un frame centrado
+frame = tk.Frame(root)
+frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+
+tk.Label(frame, text="Ingrese dato anterior (kWh)").grid(row=0)
+tk.Label(frame, text="Ingrese dato actual (kWh)").grid(row=1)
+
+entry_energia_anterior = tk.Entry(frame)
+entry_energia_actual = tk.Entry(frame)
+
 # Crear un Frame para centrar los elementos
 frame = tk.Frame(root)
 frame.pack(expand=True)
@@ -102,9 +121,22 @@ tk.Label(frame, text="Ingrese dato anterior (kWh)").grid(row=0, column=0, padx=1
 entry_energia_anterior = tk.Entry(frame)
 entry_energia_anterior.grid(row=0, column=1, padx=10, pady=10)
 
+
 tk.Label(frame, text="Ingrese dato actual (kWh)").grid(row=1, column=0, padx=10, pady=10)
 entry_energia_actual = tk.Entry(frame)
 entry_energia_actual.grid(row=1, column=1, padx=10, pady=10)
+
+
+tk.Button(frame, text="Calcular", command=calcular).grid(row=2, columnspan=2)
+
+label_resultado_potencia = tk.Label(frame, text="Potencia en W: ")
+label_resultado_potencia.grid(row=3, columnspan=2)
+label_resultado_corriente = tk.Label(frame, text="Corriente en A: ")
+label_resultado_corriente.grid(row=4, columnspan=2)
+label_resultado_capacitancia = tk.Label(frame, text="Capacitancia en Faradios: ")
+label_resultado_capacitancia.grid(row=5, columnspan=2)
+label_resultado_total = tk.Label(frame, text="Total a pagar: ")
+label_resultado_total.grid(row=6, columnspan=2)
 
 tk.Button(frame, text="Calcular", command=calcular).grid(row=2, column=0, columnspan=2, pady=20)
 
@@ -123,7 +155,8 @@ label_resultado_total.grid(row=6, column=0, columnspan=2, pady=5)
 button_desglose = tk.Button(frame, text="Ver desglose de cargos")
 button_desglose.grid(row=7, column=0, columnspan=2, pady=5)
 
-button_desglose = tk.Button(root, text="Ver desglose de cargos")
+
+button_desglose = tk.Button(frame, text="Ver desglose de cargos")
 button_desglose.grid(row=7, columnspan=2)
 #sfdgfgdhdghdghd
 
