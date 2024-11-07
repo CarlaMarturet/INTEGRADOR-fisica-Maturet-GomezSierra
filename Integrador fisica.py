@@ -1,9 +1,4 @@
 import tkinter as tk
-
-ventana= tk.Tk()
-
-ventana.mainloop()
-import tkinter as tk
 from tkinter import messagebox
 
 def calcular_potencia(energia_anterior, energia_actual, tension=220, cos_fi=0.85):
