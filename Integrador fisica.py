@@ -12,12 +12,6 @@ def calcular_corriente(potencia, tension=220, cos_fi=0.85):
     corriente = potencia / (tension * cos_fi)  # en A
     return corriente
 
-def calcular_capacitancia(corriente, tension=220):
-    frecuencia = 50  # Hz
-    reactancia_capacitiva = tension / corriente  # en ohmios
-    capacitancia = 1 / (2 * 3.1416 * frecuencia * reactancia_capacitiva)  # en Faradios
-    return capacitancia
-
 def calcular_total_pagar(consumo_energia):
     # Definir la tarifa básica
     tarifa_basica_600 = 123.9694
@@ -81,12 +75,10 @@ def calcular():
         
         consumo_energia, potencia = calcular_potencia(energia_anterior, energia_actual)
         corriente = calcular_corriente(potencia)
-        capacitancia = calcular_capacitancia(corriente)
         total_a_pagar, total_por_mes, cargos = calcular_total_pagar(consumo_energia)
         
         label_resultado_potencia.config(text=f"Potencia en W: {potencia:.2f}")
         label_resultado_corriente.config(text=f"Corriente en A: {corriente:.2f}")
-        label_resultado_capacitancia.config(text=f"Capacitancia en Faradios: {capacitancia:.6f}")
         label_resultado_total.config(text=f"Total a pagar: ${total_a_pagar:.2f}")
         label_resultado_total_mes.config(text=f"Total por mes: ${total_por_mes:.2f}")
         
@@ -97,47 +89,35 @@ def calcular():
 # Crear la ventana principal
 root = tk.Tk()
 root.title("Calculadora de Energía")
-root.geometry("900x500")  # Ajustar el tamaño de la ventana por defecto
-
-# Hacer la ventana a media pantalla y centrarla
 root.geometry("960x540")
 root.eval('tk::PlaceWindow . center')
 
 # Crear y colocar los widgets en un frame centrado
 frame = tk.Frame(root)
-frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
-
-tk.Label(frame, text="Ingrese dato anterior (kWh)").grid(row=0)
-tk.Label(frame, text="Ingrese dato actual (kWh)").grid(row=1)
-
-entry_energia_anterior = tk.Entry(frame)
-entry_energia_actual = tk.Entry(frame)
-
-# Crear un Frame para centrar los elementos
-frame = tk.Frame(root)
 frame.pack(expand=True)
 
-# Crear y colocar los widgets dentro del Frame
-tk.Label(frame, text="Ingrese dato anterior (kWh)").grid(row=0, column=0, padx=10, pady=10)
+# Mensaje de bienvenida en tamaño más grande
+tk.Label(frame, text="¡Bienvenidos!", font=("Arial", 16, "bold"), fg="black").grid(row=0, column=0, columnspan=2, pady=20)
+
+# Campos de entrada y otros widgets
+tk.Label(frame, text="Ingrese dato anterior (kWh)").grid(row=1, column=0, padx=10, pady=10)
 entry_energia_anterior = tk.Entry(frame)
-entry_energia_anterior.grid(row=0, column=1, padx=10, pady=10)
+entry_energia_anterior.grid(row=1, column=1, padx=10, pady=10)
 
-tk.Label(frame, text="Ingrese dato actual (kWh)").grid(row=1, column=0, padx=10, pady=10)
+tk.Label(frame, text="Ingrese dato actual (kWh)").grid(row=2, column=0, padx=10, pady=10)
 entry_energia_actual = tk.Entry(frame)
-entry_energia_actual.grid(row=1, column=1, padx=10, pady=10)
+entry_energia_actual.grid(row=2, column=1, padx=10, pady=10)
 
-tk.Button(frame, text="Calcular", command=calcular).grid(row=2, columnspan=2)
+tk.Button(frame, text="Calcular", command=calcular).grid(row=3, columnspan=2)
 
 label_resultado_potencia = tk.Label(frame, text="Potencia en W: ")
-label_resultado_potencia.grid(row=3, columnspan=2)
+label_resultado_potencia.grid(row=4, columnspan=2)
 label_resultado_corriente = tk.Label(frame, text="Corriente en A: ")
-label_resultado_corriente.grid(row=4, columnspan=2)
-label_resultado_capacitancia = tk.Label(frame, text="Capacitancia en Faradios: ")
-label_resultado_capacitancia.grid(row=5, columnspan=2)
+label_resultado_corriente.grid(row=5, columnspan=2)
 label_resultado_total = tk.Label(frame, text="Total bimestral: ")
 label_resultado_total.grid(row=6, columnspan=2)
 
-# Agregar etiqueta para "Total por mes"
+# Etiqueta para "Total por mes"
 label_resultado_total_mes = tk.Label(frame, text="Total por mes: ")
 label_resultado_total_mes.grid(row=7, columnspan=2)
 
