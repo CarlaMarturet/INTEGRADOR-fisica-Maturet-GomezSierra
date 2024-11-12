@@ -43,13 +43,13 @@ def calcular_total_pagar(consumo_energia):
     # Calcular el total con un supuesto subsidio
     subsidio = (cargo_fijo_suministro+ consumo_bimensual_basico+ consumo_excedente_basico142+ consumo_excedente_basico43+ consumo_excedente_basico503- beneficio_social) * 0.20
     
-    ConsumoBimestralBasico = subtotal -subsidio - beneficio_social
+    ConsumoBimestralBasico = subtotal - subsidio - beneficio_social
 
     # Calcular IVA
-    iva =  (ConsumoBimestralBasico+ alumbrado_publico) * 0.21
+    iva =  (ConsumoBimestralBasico + alumbrado_publico) * 0.21
     
     # Total a pagar
-    total_pagar =  ConsumoBimestralBasico + iva + alumbrado_publico
+    total_pagar =  ConsumoBimestralBasico + iva+ alumbrado_publico
     
     # Retornar el total a pagar y un desglose con los cargos
     return total_pagar, {
@@ -80,10 +80,12 @@ def calcular():
         
         consumo_energia, potencia = calcular_potencia(energia_anterior, energia_actual)
         corriente = calcular_corriente(potencia)
+        capacitancia = calcular_capacitancia(corriente)
         total_a_pagar, cargos = calcular_total_pagar(consumo_energia)
         
         label_resultado_potencia.config(text=f"Potencia en W: {potencia:.2f}")
         label_resultado_corriente.config(text=f"Corriente en A: {corriente:.2f}")
+        label_resultado_capacitancia.config(text=f"Capacitancia en Faradios: {capacitancia:.6f}")
         label_resultado_total.config(text=f"Total a pagar: ${total_a_pagar:.2f}")
         
         button_desglose.config(command=lambda: mostrar_desglose(cargos))
@@ -94,7 +96,6 @@ def calcular():
 root = tk.Tk()
 root.title("Calculadora de Energía")
 root.geometry("900x500")  # Ajustar el tamaño de la ventana por defecto
-
 
 # Hacer la ventana a media pantalla y centrarla
 root.geometry("960x540")
@@ -131,7 +132,7 @@ label_resultado_potencia = tk.Label(frame, text="Potencia en W: ")
 label_resultado_potencia.grid(row=3, columnspan=2)
 label_resultado_corriente = tk.Label(frame, text="Corriente en A: ")
 label_resultado_corriente.grid(row=4, columnspan=2)
-label_resultado_capacitancia = tk.Label(frame, text=" ")
+label_resultado_capacitancia = tk.Label(frame, text="Capacitancia en Faradios: ")
 label_resultado_capacitancia.grid(row=5, columnspan=2)
 label_resultado_total = tk.Label(frame, text="Total a pagar: ")
 label_resultado_total.grid(row=6, columnspan=2)
@@ -143,6 +144,9 @@ label_resultado_potencia.grid(row=3, column=0, columnspan=2, pady=5)
 
 label_resultado_corriente = tk.Label(frame, text="Corriente en A: ")
 label_resultado_corriente.grid(row=4, column=0, columnspan=2, pady=5)
+
+label_resultado_capacitancia = tk.Label(frame, text="Capacitancia en Faradios: ")
+label_resultado_capacitancia.grid(row=5, column=0, columnspan=2, pady=5)
 
 label_resultado_total = tk.Label(frame, text="Total a pagar: ")
 label_resultado_total.grid(row=6, column=0, columnspan=2, pady=5)
