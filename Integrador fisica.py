@@ -19,49 +19,49 @@ def calcular_capacitancia(corriente, tension=220):
     return capacitancia
 
 def calcular_total_pagar(consumo_energia):
-    # Desgloses y tarifas
-    cargo_fijo_suministro = 11421.88
+    # Definir la tarifa básica
+    
     tarifa_basica_600 = 123.9694
     tarifa_excedente_142 = 134.8487
     tarifa_excedente_43 = 162.1050
     tarifa_excedente_503 = 166.6580
-    beneficio_social = 800
+    
+    
+    # Calcular el consumo bimensual básico multiplicando por la tarifa
+    consumo_bimensual_basico = 600 * tarifa_basica_600
+    consumo_excedente_basico142 = 142 * tarifa_excedente_142
+    consumo_excedente_basico43 = 43 * tarifa_excedente_43
+    consumo_excedente_basico503 = 503 * tarifa_excedente_503
+    
+    # Otros cargos (simulados aquí para simplificación)
+    cargo_fijo_suministro = 11421.88
     alumbrado_publico = 4426.00
-    subsidio = 0.20
+    beneficio_social = 800
+    subtotal = (cargo_fijo_suministro + consumo_bimensual_basico + alumbrado_publico +  consumo_excedente_basico142+ consumo_excedente_basico43
+                +consumo_excedente_basico503- beneficio_social)
 
-    # Calcular cargos por consumo
-    consumo_energia_restante = consumo_energia
-    consumo_bimensual_basico = min(consumo_energia_restante, 600) * tarifa_basica_600
-    consumo_energia_restante -= min(consumo_energia_restante, 600)
-    consumo_excedente_142 = min(consumo_energia_restante, 142) * tarifa_excedente_142
-    consumo_energia_restante -= min(consumo_energia_restante, 142)
-    consumo_excedente_43 = min(consumo_energia_restante, 43) * tarifa_excedente_43
-    consumo_energia_restante -= min(consumo_energia_restante, 43)
-    consumo_excedente_503 = max(consumo_energia_restante, 0) * tarifa_excedente_503
-
-    # Calcular subtotal antes de beneficios y subsidios
-    subtotal = (cargo_fijo_suministro + consumo_bimensual_basico +
-                consumo_excedente_142 + consumo_excedente_43 +
-                consumo_excedente_503 + alumbrado_publico - beneficio_social)
-
-    # Aplicar subsidio
-    subtotal_con_subsidio = subtotal * (1 - subsidio)
+    # Calcular el total con un supuesto subsidio
+    subsidio = (cargo_fijo_suministro+ consumo_bimensual_basico+ consumo_excedente_basico142+ consumo_excedente_basico43+ consumo_excedente_basico503) * 0.20
     
+    ConsumoBimestralBasico = subtotal -subsidio - beneficio_social
+
     # Calcular IVA
-    iva = subtotal_con_subsidio * 0.21
-
-    # Total a pagar
-    total_pagar = subtotal_con_subsidio + iva
+    iva =  subtotal * 0.21
     
+    # Total a pagar
+    total_pagar =  ConsumoBimestralBasico + iva+ alumbrado_publico
+    
+    # Retornar el total a pagar y un desglose con los cargos
     return total_pagar, {
         "Cargo fijo por suministro": cargo_fijo_suministro,
         "Consumo primeros 600 KWh/Bim a $123.9694": consumo_bimensual_basico,
-        "Consumo excedente 142 KWh/Bim a $134.8487": consumo_excedente_142,
-        "Consumo excedente 43 KWh/Bim a $162.1050": consumo_excedente_43,
-        "Consumo excedente 503 KWh/Bim a $166.6580": consumo_excedente_503,
-        "Beneficio Social Provincial Eléctrico": -beneficio_social,
+        "Consumo excendete 142 KWh/Bim a $134.8474": consumo_excedente_basico142,
+        "Consumo excendete 43 KWh/Bim a $162.1050": consumo_excedente_basico43,
+        "Consumo excendete 503 KWh/Bim a $166.6580": consumo_excedente_basico503,
+        "Beneficio social provinvicial social -": beneficio_social ,
+        "Subsidio  ": subsidio,
+        "Consumo Bimestral - BASICO ": ConsumoBimestralBasico,
         "Alumbrado Publico": alumbrado_publico,
-        "Subtotal con subsidio aplicado": subtotal_con_subsidio,
         "IVA consumidor final 21 %": iva,
         "Total a pagar": total_pagar
     }
