@@ -38,15 +38,15 @@ def calcular_total_pagar(consumo_energia):
     alumbrado_publico = 4426.00
     beneficio_social = 800
     subtotal = (cargo_fijo_suministro + consumo_bimensual_basico + alumbrado_publico +  consumo_excedente_basico142+ consumo_excedente_basico43
-                +consumo_excedente_basico503- beneficio_social)
+                +consumo_excedente_basico503)
 
     # Calcular el total con un supuesto subsidio
-    subsidio = (cargo_fijo_suministro+ consumo_bimensual_basico+ consumo_excedente_basico142+ consumo_excedente_basico43+ consumo_excedente_basico503) * 0.20
+    subsidio = (cargo_fijo_suministro+ consumo_bimensual_basico+ consumo_excedente_basico142+ consumo_excedente_basico43+ consumo_excedente_basico503- beneficio_social) * 0.20
     
-    ConsumoBimestralBasico = subtotal -subsidio - beneficio_social
+    ConsumoBimestralBasico = subtotal - subsidio - beneficio_social
 
     # Calcular IVA
-    iva =  subtotal * 0.21
+    iva =  (ConsumoBimestralBasico + alumbrado_publico) * 0.21
     
     # Total a pagar
     total_pagar =  ConsumoBimestralBasico + iva+ alumbrado_publico
@@ -96,7 +96,6 @@ def calcular():
 root = tk.Tk()
 root.title("Calculadora de Energía")
 root.geometry("900x500")  # Ajustar el tamaño de la ventana por defecto
-
 
 # Hacer la ventana a media pantalla y centrarla
 root.geometry("960x540")
