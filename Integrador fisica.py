@@ -20,12 +20,10 @@ def calcular_capacitancia(corriente, tension=220):
 
 def calcular_total_pagar(consumo_energia):
     # Definir la tarifa básica
-    
     tarifa_basica_600 = 123.9694
     tarifa_excedente_142 = 134.8487
     tarifa_excedente_43 = 162.1050
     tarifa_excedente_503 = 166.6580
-    
     
     # Calcular el consumo bimensual básico multiplicando por la tarifa
     consumo_bimensual_basico = 600 * tarifa_basica_600
@@ -37,30 +35,33 @@ def calcular_total_pagar(consumo_energia):
     cargo_fijo_suministro = 11421.88
     alumbrado_publico = 4426.00
     beneficio_social = 800
-    subtotal = (cargo_fijo_suministro + consumo_bimensual_basico + alumbrado_publico +  consumo_excedente_basico142+ consumo_excedente_basico43
-                +consumo_excedente_basico503)
+    subtotal = (cargo_fijo_suministro + consumo_bimensual_basico + alumbrado_publico +  consumo_excedente_basico142 + consumo_excedente_basico43
+                + consumo_excedente_basico503)
 
     # Calcular el total con un supuesto subsidio
-    subsidio = (cargo_fijo_suministro+ consumo_bimensual_basico+ consumo_excedente_basico142+ consumo_excedente_basico43+ consumo_excedente_basico503- beneficio_social) * 0.20
+    subsidio = (cargo_fijo_suministro + consumo_bimensual_basico + consumo_excedente_basico142 + consumo_excedente_basico43 + consumo_excedente_basico503 - beneficio_social) * 0.20
     
     ConsumoBimestralBasico = subtotal - subsidio - beneficio_social
 
     # Calcular IVA
-    iva =  (ConsumoBimestralBasico + alumbrado_publico) * 0.21
+    iva = (ConsumoBimestralBasico + alumbrado_publico) * 0.21
     
     # Total a pagar
-    total_pagar =  ConsumoBimestralBasico + iva+ alumbrado_publico
+    total_pagar = ConsumoBimestralBasico + iva + alumbrado_publico
     
-    # Retornar el total a pagar y un desglose con los cargos
-    return total_pagar, {
+    # Dividir el total entre 2 para obtener el "total por mes"
+    total_por_mes = total_pagar / 2
+    
+    # Retornar el total a pagar y el total por mes
+    return total_pagar, total_por_mes, {
         "Cargo fijo por suministro": cargo_fijo_suministro,
         "Consumo primeros 600 KWh/Bim a $123.9694": consumo_bimensual_basico,
-        "Consumo excendete 142 KWh/Bim a $134.8474": consumo_excedente_basico142,
-        "Consumo excendete 43 KWh/Bim a $162.1050": consumo_excedente_basico43,
-        "Consumo excendete 503 KWh/Bim a $166.6580": consumo_excedente_basico503,
-        "Beneficio social provinvicial social -": beneficio_social ,
-        "Subsidio  ": subsidio,
-        "Consumo Bimestral - BASICO ": ConsumoBimestralBasico,
+        "Consumo excedente 142 KWh/Bim a $134.8474": consumo_excedente_basico142,
+        "Consumo excedente 43 KWh/Bim a $162.1050": consumo_excedente_basico43,
+        "Consumo excedente 503 KWh/Bim a $166.6580": consumo_excedente_basico503,
+        "Beneficio social provincial -": beneficio_social,
+        "Subsidio": subsidio,
+        "Consumo Bimestral - BASICO": ConsumoBimestralBasico,
         "Alumbrado Publico": alumbrado_publico,
         "IVA consumidor final 21 %": iva,
         "Total a pagar": total_pagar
@@ -81,12 +82,13 @@ def calcular():
         consumo_energia, potencia = calcular_potencia(energia_anterior, energia_actual)
         corriente = calcular_corriente(potencia)
         capacitancia = calcular_capacitancia(corriente)
-        total_a_pagar, cargos = calcular_total_pagar(consumo_energia)
+        total_a_pagar, total_por_mes, cargos = calcular_total_pagar(consumo_energia)
         
         label_resultado_potencia.config(text=f"Potencia en W: {potencia:.2f}")
         label_resultado_corriente.config(text=f"Corriente en A: {corriente:.2f}")
         label_resultado_capacitancia.config(text=f"Capacitancia en Faradios: {capacitancia:.6f}")
         label_resultado_total.config(text=f"Total a pagar: ${total_a_pagar:.2f}")
+        label_resultado_total_mes.config(text=f"Total por mes: ${total_por_mes:.2f}")
         
         button_desglose.config(command=lambda: mostrar_desglose(cargos))
     except ValueError as e:
@@ -120,11 +122,9 @@ tk.Label(frame, text="Ingrese dato anterior (kWh)").grid(row=0, column=0, padx=1
 entry_energia_anterior = tk.Entry(frame)
 entry_energia_anterior.grid(row=0, column=1, padx=10, pady=10)
 
-
 tk.Label(frame, text="Ingrese dato actual (kWh)").grid(row=1, column=0, padx=10, pady=10)
 entry_energia_actual = tk.Entry(frame)
 entry_energia_actual.grid(row=1, column=1, padx=10, pady=10)
-
 
 tk.Button(frame, text="Calcular", command=calcular).grid(row=2, columnspan=2)
 
@@ -134,30 +134,15 @@ label_resultado_corriente = tk.Label(frame, text="Corriente en A: ")
 label_resultado_corriente.grid(row=4, columnspan=2)
 label_resultado_capacitancia = tk.Label(frame, text="Capacitancia en Faradios: ")
 label_resultado_capacitancia.grid(row=5, columnspan=2)
-label_resultado_total = tk.Label(frame, text="Total a pagar: ")
+label_resultado_total = tk.Label(frame, text="Total bimestral: ")
 label_resultado_total.grid(row=6, columnspan=2)
 
-tk.Button(frame, text="Calcular", command=calcular).grid(row=2, column=0, columnspan=2, pady=20)
-
-label_resultado_potencia = tk.Label(frame, text="Potencia en W: ")
-label_resultado_potencia.grid(row=3, column=0, columnspan=2, pady=5)
-
-label_resultado_corriente = tk.Label(frame, text="Corriente en A: ")
-label_resultado_corriente.grid(row=4, column=0, columnspan=2, pady=5)
-
-label_resultado_capacitancia = tk.Label(frame, text="Capacitancia en Faradios: ")
-label_resultado_capacitancia.grid(row=5, column=0, columnspan=2, pady=5)
-
-label_resultado_total = tk.Label(frame, text="Total a pagar: ")
-label_resultado_total.grid(row=6, column=0, columnspan=2, pady=5)
+# Agregar etiqueta para "Total por mes"
+label_resultado_total_mes = tk.Label(frame, text="Total por mes: ")
+label_resultado_total_mes.grid(row=7, columnspan=2)
 
 button_desglose = tk.Button(frame, text="Ver desglose de cargos")
-button_desglose.grid(row=7, column=0, columnspan=2, pady=5)
-
-
-button_desglose = tk.Button(frame, text="Ver desglose de cargos")
-button_desglose.grid(row=7, columnspan=2)
-#sfdgfgdhdghdghd
+button_desglose.grid(row=8, columnspan=2, pady=5)
 
 # Iniciar el bucle principal de la interfaz gráfica
 root.mainloop()
